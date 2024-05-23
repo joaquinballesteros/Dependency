@@ -3,7 +3,7 @@ import { Survey } from "../../../models/Survey";
 import { useParams } from "react-router-dom";
 import { SurveyQuestion } from "../../../models/SurveyQuestion";
 import { GetVariable, StorageVariable } from "../../../utils/localStorage";
-import { Button, Form, FormCheck, Spinner } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { QuestionType } from "../../../models/Question";
 import { QuestionDetails } from "../../../models/QuestionDetails";
 import SurveyTitle from "../../../components/surveyTitle";
@@ -41,17 +41,17 @@ function AnswerSurvey() {
 
     function GetQuestionBody(type: QuestionType, details: QuestionDetails) {
         if(type === QuestionType.SINGLE_CHOICE) {
-            return <FormCheck required>
+            return <>
                 {
                     details.Answers.map((answer, i) => 
                         <>
-                            <Form.Check key={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={i.toString()} label={answer}></Form.Check>
+                            <Form.Check required key={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={i.toString()} label={answer}></Form.Check>
                         </>
                     )
                 }
-            </FormCheck>;
+            </>;
         } else if(type === QuestionType.MULTIPLE_CHOICE) {
-            return <FormCheck required>
+            return <>
                 {
                     details.Answers.map((answer, i) => 
                         <>
@@ -59,7 +59,7 @@ function AnswerSurvey() {
                         </>
                     )
                 }
-            </FormCheck>;
+            </>;
         } else if(type === QuestionType.FREE_TEXT) {
             return <Form.Control key={`${currQuestionIdx}`} type="text" required placeholder="Introduzca su respuesta"></Form.Control>;
         } else if(type === QuestionType.DATE) {
@@ -91,8 +91,8 @@ function AnswerSurvey() {
 
                         {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
-                        <Button type="submit" variant="secondary">Continuar</Button>
-                        <Button className="skip-button" type="button" variant="secondary">Saltar</Button>
+                        <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
+                        <Button className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
                     </Form>
                 </main>
             </>
