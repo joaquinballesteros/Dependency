@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+main {
+  padding: 1em 1em 2em 1em;
+}
+
+.survey-title {
+  padding: 2em 1em 1em 1em;
+  background-color: black;
+  color: white;
+  text-align: center;
+}
+
+.survey-description {
+  text-align: justify;
+}
+
+.skip-button {
+  float: right;
+}

@@ -1,15 +1,34 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import StartSurvey from './app/[surveyId]/start/page';
+import SelectProfile from './app/[surveyId]/selectProfile/page';
+import AnswerSurvey from './app/[surveyId]/answer/page';
+
+const router = createBrowserRouter([
+  {
+    path: "/:surveyId/start",
+    Component: StartSurvey
+  },
+  {
+    path: "/:surveyId/selectProfile",
+    Component: SelectProfile
+  },
+  {
+    path: "/:surveyId/answer",
+    Component: AnswerSurvey
+  }
+]);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+      <RouterProvider router={router} />
   </React.StrictMode>
 );
 
