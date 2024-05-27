@@ -80,7 +80,6 @@ function AnswerSurvey() {
         }
     }, [surveyId, LoadQuestions]);
 
-
     function GetQuestionBody(type: QuestionType, details: QuestionDetails) {
         if (type === QuestionType.SINGLE_CHOICE) {
             return <>
@@ -152,6 +151,12 @@ function AnswerSurvey() {
     function SaveAndContinue(e: FormEvent) {
         e.preventDefault();
 
+        //TODO: Actually save the results somewhere
+
+        NextQuestion();
+    }
+
+    function Skip() {
         NextQuestion();
     }
 
@@ -177,7 +182,7 @@ function AnswerSurvey() {
                             {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
                             <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
-                            <Button className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
+                            <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
                         </Form>
                         :
                         <Spinner></Spinner>
