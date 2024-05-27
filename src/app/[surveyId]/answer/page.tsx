@@ -106,7 +106,7 @@ function AnswerSurvey() {
         } else if (type === QuestionType.DATE) {
             return <Form.Control key={`${currQuestionIdx}`} required type="date"></Form.Control>
         } else if (type === QuestionType.RANGE) {
-            return <Container className="m-0 p-0">
+            return <Container className="m-0 p-0 numeric-range-container">
                 <Row className="m-0 p-0">
                     <Col className="m-0 p-0 text-center">
                         {details.First}
@@ -177,12 +177,14 @@ function AnswerSurvey() {
                     {
                         surveyQuestion?
                         <Form onSubmit={SaveAndContinue}>
-                            <Form.Label>{surveyQuestion.Details.Title}</Form.Label>
+                            <Form.Label className="question-title mb-3">{surveyQuestion.Details.Title}</Form.Label>
 
                             {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
-                            <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
-                            <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
+                            <div className="mt-5">
+                                <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
+                                <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
+                            </div>
                         </Form>
                         :
                         <Spinner></Spinner>

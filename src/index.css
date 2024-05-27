@@ -30,3 +30,17 @@ main {
 .skip-button {
   float: right;
 }
+
+.question-title {
+  font-size: large;
+  text-align: justify;
+  font-weight: 600;
+}
+
+.numeric-range-container {
+  max-width: 40em;
+}
+
+input[type="radio"], input[type="check"], input[type="text"], input[type="date"] {
+  border-color: darkgray;
+}
