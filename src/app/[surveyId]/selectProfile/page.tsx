@@ -5,10 +5,10 @@ import { Survey } from "../../../models/Survey";
 import { GetVariable, SetVariable, StorageVariable } from "../../../utils/localStorage";
 import { Profile } from "../../../models/Profile";
 import { GetAllProfiles } from "../../../repositories/profilesRepo";
-import { GetQuestion } from "../../../repositories/questionRepo";
-import { GetAllVersions } from "../../../repositories/versionRepo";
-import { QuestionDetails } from "../../../models/QuestionDetails";
-import { SurveyQuestion } from "../../../models/SurveyQuestion";
+// import { GetQuestion } from "../../../repositories/questionRepo";
+// import { GetAllVersions } from "../../../repositories/versionRepo";
+// import { QuestionDetails } from "../../../models/QuestionDetails";
+// import { SurveyQuestion } from "../../../models/SurveyQuestion";
 import SurveyTitle from "../../../components/surveyTitle";
 
 function SelectProfile() {
@@ -53,48 +53,48 @@ function SelectProfile() {
             return;
         }
 
-        const surveyQuestions: SurveyQuestion[] = [];
+        // const surveyQuestions: SurveyQuestion[] = [];
 
-        for (let i = 0; i < questionOrder.length; i++) {
-            const questionId = questionOrder[i];
+        // for (let i = 0; i < questionOrder.length; i++) {
+        //     const questionId = questionOrder[i];
             
-            const question = await GetQuestion(surveyId, questionId);
+        //     const question = await GetQuestion(surveyId, questionId);
 
-            if(question) {
-                let questionDetails: QuestionDetails|undefined = undefined;
+        //     if(question) {
+        //         let questionDetails: QuestionDetails|undefined = undefined;
 
-                if(question.HasVersions && selectedProfile !== "NoProfile") {
-                    const versions = await GetAllVersions(surveyId, questionId);
+        //         if(question.HasVersions && selectedProfile !== "NoProfile") {
+        //             const versions = await GetAllVersions(surveyId, questionId);
 
-                    if(versions) {
-                        let hasAdded = false;
+        //             if(versions) {
+        //                 let hasAdded = false;
 
-                        for (let o = 0; o < versions.length; o++) {
-                            const version = versions[o];
-                            if(version.Profiles.includes(selectedProfile)) {
-                                hasAdded = true;
-                                questionDetails = version.Details;
-                                break;
-                            }
-                        }
+        //                 for (let o = 0; o < versions.length; o++) {
+        //                     const version = versions[o];
+        //                     if(version.Profiles.includes(selectedProfile)) {
+        //                         hasAdded = true;
+        //                         questionDetails = version.Details;
+        //                         break;
+        //                     }
+        //                 }
 
-                        if(!hasAdded) {
-                            questionDetails = question.DefaultDetails;
-                        }
-                    }
-                } else {
-                    questionDetails = question.DefaultDetails;
-                }
+        //                 if(!hasAdded) {
+        //                     questionDetails = question.DefaultDetails;
+        //                 }
+        //             }
+        //         } else {
+        //             questionDetails = question.DefaultDetails;
+        //         }
 
-                surveyQuestions.push({
-                    ID: question.ID!,
-                    QuestionType: question.QuestionType,
-                    Details: questionDetails!
-                })
-            }
-        }
+        //         surveyQuestions.push({
+        //             ID: question.ID!,
+        //             QuestionType: question.QuestionType,
+        //             Details: questionDetails!
+        //         })
+        //     }
+        // }
 
-        SetVariable(StorageVariable.SURVEY_QUESTIONS, surveyQuestions);
+        // SetVariable(StorageVariable.SURVEY_QUESTIONS, surveyQuestions);
         window.location.href = `/${surveyId}/answer`;
     }
 
