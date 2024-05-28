@@ -1,20 +1,21 @@
 import { useParams } from "react-router-dom";
 import { GetSurvey } from "../../../repositories/surveyRepo";
 import { useCallback, useEffect, useState } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Survey } from "../../../models/Survey";
 import { GetVariable, SetVariable, StorageVariable } from "../../../utils/localStorage";
 import SurveyTitle from "../../../components/surveyTitle";
+import LoadingScreen from "../../../components/loadingScreen";
 
 function StartSurvey() {
     const params = useParams();
     const surveyId = params.surveyId!;
 
-    const [survey, setSurvey] = useState<Survey|undefined>();
+    const [survey, setSurvey] = useState<Survey | undefined>();
 
     const FetchSurveyData = useCallback(async function () {
         const fetchedSurvey = await GetSurvey(surveyId);
-        if(fetchedSurvey) {
+        if (fetchedSurvey) {
             SetVariable(StorageVariable.SURVEY_INFO, fetchedSurvey);
             SetVariable(StorageVariable.QUESTION_ORDER, fetchedSurvey.QuestionOrder);
 
@@ -25,7 +26,7 @@ function StartSurvey() {
     useEffect(() => {
         const existingSurvey = GetVariable<Survey>(StorageVariable.SURVEY_INFO);
 
-        if(existingSurvey && existingSurvey.ID === surveyId) {
+        if (existingSurvey && existingSurvey.ID === surveyId) {
             setSurvey(existingSurvey);
         } else {
             FetchSurveyData();
@@ -38,17 +39,19 @@ function StartSurvey() {
 
     return <>
         {
-            survey?
-            <>
-            <SurveyTitle title={survey.Title}></SurveyTitle>
-            <main>
-                <p className="survey-description">{survey.PublicDescription}</p>
+            survey ?
+                <>
+                    <SurveyTitle title={survey.Title}></SurveyTitle>
+                    <main>
+                        <p className="survey-description">{survey.PublicDescription}</p>
 
-                <Button onClick={OnContinueButtonClick} variant="secondary">Comenzar Encuesta</Button>
-            </main>
-            </>
-            :
-            <Spinner></Spinner>
+                        <Button onClick={OnContinueButtonClick} variant="secondary">Comenzar Encuesta</Button>
+                    </main>
+                </>
+                :
+                <main>
+                    <LoadingScreen></LoadingScreen>
+                </main>
         }
     </>;
 }

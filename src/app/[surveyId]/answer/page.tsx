@@ -3,12 +3,13 @@ import { Survey } from "../../../models/Survey";
 import { useParams } from "react-router-dom";
 import { SurveyQuestion } from "../../../models/SurveyQuestion";
 import { GetVariable, StorageVariable } from "../../../utils/localStorage";
-import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { QuestionType } from "../../../models/Question";
 import { QuestionDetails } from "../../../models/QuestionDetails";
 import SurveyTitle from "../../../components/surveyTitle";
 import { GetQuestion } from "../../../repositories/questionRepo";
 import { GetAllVersions } from "../../../repositories/versionRepo";
+import LoadingScreen from "../../../components/loadingScreen";
 
 function AnswerSurvey() {
     const params = useParams();
@@ -19,33 +20,33 @@ function AnswerSurvey() {
     const [surveyQuestions, setSurveyQuestions] = useState<SurveyQuestion[] | undefined>();
     const [currQuestionIdx, setCurrQuestionIdx] = useState(0);
 
-    const LoadQuestions = useCallback(async function(order: string[], selectedProfile: string){
+    const LoadQuestions = useCallback(async function (order: string[], selectedProfile: string) {
         const loadedQuestions: SurveyQuestion[] = [];
 
         for (let i = 0; i < order.length; i++) {
             const questionId = order[i];
-            
+
             const question = await GetQuestion(surveyId, questionId);
 
-            if(question) {
-                let questionDetails: QuestionDetails|undefined = undefined;
+            if (question) {
+                let questionDetails: QuestionDetails | undefined = undefined;
 
-                if(question.HasVersions && selectedProfile !== "NoProfile") {
+                if (question.HasVersions && selectedProfile !== "NoProfile") {
                     const versions = await GetAllVersions(surveyId, questionId);
 
-                    if(versions) {
+                    if (versions) {
                         let hasAdded = false;
 
                         for (let o = 0; o < versions.length; o++) {
                             const version = versions[o];
-                            if(version.Profiles.includes(selectedProfile)) {
+                            if (version.Profiles.includes(selectedProfile)) {
                                 hasAdded = true;
                                 questionDetails = version.Details;
                                 break;
                             }
                         }
 
-                        if(!hasAdded) {
+                        if (!hasAdded) {
                             questionDetails = question.DefaultDetails;
                         }
                     }
@@ -160,8 +161,8 @@ function AnswerSurvey() {
         NextQuestion();
     }
 
-    let surveyQuestion: SurveyQuestion|undefined = undefined;
-    if(questionOrder) {
+    let surveyQuestion: SurveyQuestion | undefined = undefined;
+    if (questionOrder) {
         const questionId = questionOrder[currQuestionIdx];
 
         surveyQuestion = surveyQuestions?.find(x => x.ID === questionId);
@@ -169,30 +170,34 @@ function AnswerSurvey() {
 
     return <>
         {
-            survey && questionOrder && surveyQuestions?
+            survey && questionOrder && surveyQuestions ?
                 <>
                     <SurveyTitle title={survey.Title}></SurveyTitle>
 
                     <main>
-                    {
-                        surveyQuestion?
-                        <Form onSubmit={SaveAndContinue}>
-                            <Form.Label className="question-title mb-3">{surveyQuestion.Details.Title}</Form.Label>
+                        {
+                            surveyQuestion ?
+                                <Form onSubmit={SaveAndContinue}>
+                                    <Form.Label className="question-title mb-3">{surveyQuestion.Details.Title}</Form.Label>
 
-                            {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
+                                    {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
-                            <div className="mt-5">
-                                <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
-                                <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
-                            </div>
-                        </Form>
-                        :
-                        <Spinner></Spinner>
-                    }
+                                    <div className="mt-5">
+                                        <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
+                                        <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
+                                    </div>
+                                </Form>
+                                :
+                                <main>
+                                    <LoadingScreen title="Cargando siguiente pregunta..."></LoadingScreen>
+                                </main>
+                        }
                     </main>
                 </>
                 :
-                <Spinner></Spinner>
+                <main>
+                    <LoadingScreen></LoadingScreen>
+                </main>
         }
     </>;
 }

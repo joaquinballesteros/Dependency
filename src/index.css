@@ -44,3 +44,8 @@ main {
 input[type="radio"], input[type="check"], input[type="text"], input[type="date"] {
   border-color: darkgray;
 }
+
+.loading-div {
+  text-align: center;
+  padding: 2em;
+}
