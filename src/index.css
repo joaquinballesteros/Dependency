@@ -49,3 +49,8 @@ input[type="radio"], input[type="check"], input[type="text"], input[type="date"]
   text-align: center;
   padding: 2em;
 }
+
+.yesno-btn {
+  width: 3em;
+  font-size: large;
+}

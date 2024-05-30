@@ -8,6 +8,7 @@ import StartSurvey from './app/[surveyId]/start/page';
 import SelectProfile from './app/[surveyId]/selectProfile/page';
 import AnswerSurvey from './app/[surveyId]/answer/page';
 import FinishSurvey from './app/[surveyId]/finish/page';
+import AskConsent from './app/[surveyId]/consent/page';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/:surveyId/finish",
     Component: FinishSurvey
+  },
+  {
+    path: "/:surveyId/consent",
+    Component: AskConsent
   },
 ]);
 

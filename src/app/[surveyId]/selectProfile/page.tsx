@@ -13,7 +13,6 @@ function SelectProfile() {
     const surveyId = params.surveyId!;
 
     const [survey, setSurvey] = useState<Survey | undefined>();
-    const [questionOrder, setQuestionOrder] = useState<string[] | undefined>();
     const [profiles, setProfiles] = useState<Profile[] | undefined>();
     const [selectedProfile, setSelectedProfile] = useState("NoProfile");
 
@@ -26,11 +25,9 @@ function SelectProfile() {
 
     useEffect(() => {
         const existingSurvey = GetVariable<Survey>(StorageVariable.SURVEY_INFO);
-        const existingQuestionOrder = GetVariable<string[]>(StorageVariable.QUESTION_ORDER);
 
-        if (existingSurvey && existingSurvey.ID === surveyId && existingQuestionOrder) {
+        if (existingSurvey && existingSurvey.ID === surveyId) {
             setSurvey(existingSurvey);
-            setQuestionOrder(existingQuestionOrder);
             FetchProfiles()
         } else {
             window.location.href = `/${surveyId}/start`
@@ -46,10 +43,6 @@ function SelectProfile() {
 
         SetVariable(StorageVariable.SELECTED_PROFILE, selectedProfile);
         SetVariable(StorageVariable.CURRENT_NODE, null);
-
-        if (!questionOrder) {
-            return;
-        }
 
         window.location.href = `/${surveyId}/answer`;
     }

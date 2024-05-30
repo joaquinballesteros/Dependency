@@ -34,7 +34,7 @@ function StartSurvey() {
     }, [surveyId, FetchSurveyData]);
 
     function OnContinueButtonClick() {
-        window.location.href = `/${surveyId}/selectProfile`;
+        window.location.href = `/${surveyId}/consent`;
     }
 
     return <>
