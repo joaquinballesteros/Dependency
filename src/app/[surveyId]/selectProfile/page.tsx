@@ -45,6 +45,7 @@ function SelectProfile() {
         e.preventDefault();
 
         SetVariable(StorageVariable.SELECTED_PROFILE, selectedProfile);
+        SetVariable(StorageVariable.CURRENT_NODE, null);
 
         if (!questionOrder) {
             return;

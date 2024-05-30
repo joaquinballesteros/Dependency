@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react"
 import { Survey } from "../../../models/Survey";
 import { useParams } from "react-router-dom";
 import { SurveyQuestion } from "../../../models/SurveyQuestion";
-import { GetVariable, StorageVariable } from "../../../utils/localStorage";
+import { GetVariable, SetVariable, StorageVariable } from "../../../utils/localStorage";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { QuestionType } from "../../../models/Question";
 import { QuestionDetails } from "../../../models/QuestionDetails";
@@ -21,14 +21,25 @@ function AnswerSurvey() {
     const [questionOrder, setQuestionOrder] = useState<string[] | undefined>();
     const [surveyQuestions, setSurveyQuestions] = useState<SurveyQuestion[] | undefined>();
     const [currQuestionIdx, setCurrQuestionIdx] = useState(0);
-    const [surveyNode, setSurveyNode] = useState<SurveyNode | undefined>();
+    const [surveyNode, _setSurveyNode] = useState<SurveyNode | undefined>();
     const [, setAnswer] = useState("");
     const [answerIndex, setAnswerIndex] = useState(0);
+
+    const SetSurveyNode = useCallback(function(node: SurveyNode | undefined) {
+        SetVariable(StorageVariable.CURRENT_NODE, node);
+
+        if(!node?.QuestionId) {
+            window.location.href = `/${surveyId}/finish`
+            return;
+        }
+
+        _setSurveyNode(node);
+    }, [surveyId]);
 
     const GetFirstSurveyNode = useCallback(async function() {
         const root = await GetRootNode(surveyId);
 
-        setSurveyNode(root);
+        return root;
     }, [surveyId]);
 
     const LoadQuestions = useCallback(async function (selectedProfile: string, existingQuestionOrder: string[]) {
@@ -86,11 +97,20 @@ function AnswerSurvey() {
             setQuestionOrder(existingQuestionOrder);
 
             LoadQuestions(selectedProfile, existingQuestionOrder);
-            GetFirstSurveyNode();
+
+            const existingNode = GetVariable<SurveyNode>(StorageVariable.CURRENT_NODE);
+
+            if(!existingNode) {
+                GetFirstSurveyNode().then(node => {
+                    SetSurveyNode(node);
+                });
+            } else {
+                SetSurveyNode(existingNode);
+            }
         } else {
             window.location.href = `/${surveyId}/start`
         }
-    }, [surveyId, LoadQuestions, GetFirstSurveyNode]);
+    }, [surveyId, LoadQuestions, GetFirstSurveyNode, SetSurveyNode]);
 
     function ChangeAnswer(e: ChangeEvent<HTMLInputElement>) {
         const target = e.target;
@@ -177,7 +197,7 @@ function AnswerSurvey() {
         if(!surveyNode) { return; }
         
         const newNode = await GetNextNode(surveyId, surveyNode.ID, answerIndex);
-        setSurveyNode(newNode);
+        SetSurveyNode(newNode);
 
         setCurrQuestionIdx(currQuestionIdx + 1);
         setAnswer("");

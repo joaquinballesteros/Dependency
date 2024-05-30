@@ -2,7 +2,8 @@ export enum StorageVariable {
     SURVEY_INFO = "SurveyInfo",
     QUESTION_ORDER = "QuestionOrder",
     SELECTED_PROFILE = "SelectedProfile",
-    SURVEY_QUESTIONS = "SurveyQuestions"
+    SURVEY_QUESTIONS = "SurveyQuestions",
+    CURRENT_NODE = "CurrentSurveyNode"
 }
 
 export function GetVariable<T>(variable: StorageVariable): T | null {

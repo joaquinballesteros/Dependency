@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StartSurvey from './app/[surveyId]/start/page';
 import SelectProfile from './app/[surveyId]/selectProfile/page';
 import AnswerSurvey from './app/[surveyId]/answer/page';
+import FinishSurvey from './app/[surveyId]/finish/page';
 
 const router = createBrowserRouter([
   {
@@ -20,7 +21,11 @@ const router = createBrowserRouter([
   {
     path: "/:surveyId/answer",
     Component: AnswerSurvey
-  }
+  },
+  {
+    path: "/:surveyId/finish",
+    Component: FinishSurvey
+  },
 ]);
 
 const root = ReactDOM.createRoot(
