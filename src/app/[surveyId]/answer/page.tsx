@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from "react";
 import { Survey } from "../../../models/Survey";
 import { useParams } from "react-router-dom";
 import { SurveyQuestion } from "../../../models/SurveyQuestion";
@@ -10,6 +10,8 @@ import SurveyTitle from "../../../components/surveyTitle";
 import { GetQuestion } from "../../../repositories/questionRepo";
 import { GetAllVersions } from "../../../repositories/versionRepo";
 import LoadingScreen from "../../../components/loadingScreen";
+import { SurveyNode } from "../../../models/SurveyNode";
+import { GetNextNode, GetRootNode } from "../../../repositories/surveyNodeRepo";
 
 function AnswerSurvey() {
     const params = useParams();
@@ -19,12 +21,21 @@ function AnswerSurvey() {
     const [questionOrder, setQuestionOrder] = useState<string[] | undefined>();
     const [surveyQuestions, setSurveyQuestions] = useState<SurveyQuestion[] | undefined>();
     const [currQuestionIdx, setCurrQuestionIdx] = useState(0);
+    const [surveyNode, setSurveyNode] = useState<SurveyNode | undefined>();
+    const [, setAnswer] = useState("");
+    const [answerIndex, setAnswerIndex] = useState(0);
 
-    const LoadQuestions = useCallback(async function (order: string[], selectedProfile: string) {
+    const GetFirstSurveyNode = useCallback(async function() {
+        const root = await GetRootNode(surveyId);
+
+        setSurveyNode(root);
+    }, [surveyId]);
+
+    const LoadQuestions = useCallback(async function (selectedProfile: string, existingQuestionOrder: string[]) {
         const loadedQuestions: SurveyQuestion[] = [];
 
-        for (let i = 0; i < order.length; i++) {
-            const questionId = order[i];
+        for (let i = 0; i < existingQuestionOrder.length; i++) {
+            const questionId = existingQuestionOrder[i];
 
             const question = await GetQuestion(surveyId, questionId);
 
@@ -60,7 +71,6 @@ function AnswerSurvey() {
                     Details: questionDetails!
                 });
 
-                console.log("Loaded " + question.ID)
                 setSurveyQuestions([...loadedQuestions]);
             }
         }
@@ -75,11 +85,29 @@ function AnswerSurvey() {
             setSurvey(existingSurvey);
             setQuestionOrder(existingQuestionOrder);
 
-            LoadQuestions(existingQuestionOrder, selectedProfile);
+            LoadQuestions(selectedProfile, existingQuestionOrder);
+            GetFirstSurveyNode();
         } else {
             window.location.href = `/${surveyId}/start`
         }
-    }, [surveyId, LoadQuestions]);
+    }, [surveyId, LoadQuestions, GetFirstSurveyNode]);
+
+    function ChangeAnswer(e: ChangeEvent<HTMLInputElement>) {
+        const target = e.target;
+        const value = target.value;
+
+        if(target.type === "radio" || target.type === "check") {
+            const tokens = value.split("-");
+
+            setAnswerIndex(parseInt(tokens[0]));
+
+            tokens.splice(0, 1);
+            setAnswer(tokens.join("-"));
+        } else {
+            setAnswerIndex(0);
+            setAnswer(value);
+        }
+    }
 
     function GetQuestionBody(type: QuestionType, details: QuestionDetails) {
         if (type === QuestionType.SINGLE_CHOICE) {
@@ -87,7 +115,7 @@ function AnswerSurvey() {
                 {
                     details.Answers.map((answer, i) =>
                         <>
-                            <Form.Check required key={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={i.toString()} label={answer}></Form.Check>
+                            <Form.Check onChange={ChangeAnswer} required key={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={`${i}-${answer}`} label={answer}></Form.Check>
                         </>
                     )
                 }
@@ -97,15 +125,15 @@ function AnswerSurvey() {
                 {
                     details.Answers.map((answer, i) =>
                         <>
-                            <Form.Check key={`${currQuestionIdx}-${i}`} type="checkbox" name="answers" value={i.toString()} label={answer}></Form.Check>
+                            <Form.Check onChange={ChangeAnswer} key={`${currQuestionIdx}-${i}`} type="checkbox" name="answers" value={`${i}-${answer}`} label={answer}></Form.Check>
                         </>
                     )
                 }
             </>;
         } else if (type === QuestionType.FREE_TEXT) {
-            return <Form.Control key={`${currQuestionIdx}`} type="text" required placeholder="Introduzca su respuesta"></Form.Control>;
+            return <Form.Control onChange={ChangeAnswer} key={`${currQuestionIdx}`} type="text" required placeholder="Introduzca su respuesta"></Form.Control>;
         } else if (type === QuestionType.DATE) {
-            return <Form.Control key={`${currQuestionIdx}`} required type="date"></Form.Control>
+            return <Form.Control onChange={ChangeAnswer} key={`${currQuestionIdx}`} required type="date"></Form.Control>
         } else if (type === QuestionType.RANGE) {
             return <Container className="m-0 p-0 numeric-range-container">
                 <Row className="m-0 p-0">
@@ -126,9 +154,9 @@ function AnswerSurvey() {
 
                         <Row className="m-0 p-0">
                             {
-                                details.Answers.map((_, i) =>
+                                details.Answers.map((answer, i) =>
                                     <Col className="m-0 p-0 text-center">
-                                        <Form.Check required key={`${currQuestionIdx}-${i}`} id={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={i.toString()}></Form.Check>
+                                        <Form.Check onChange={ChangeAnswer} required key={`${currQuestionIdx}-${i}`} id={`${currQuestionIdx}-${i}`} type="radio" name="answers" value={`${i}-${answer}`}></Form.Check>
                                     </Col>
                                 )
                             }
@@ -145,14 +173,21 @@ function AnswerSurvey() {
         return <p>Tipo de pregunta no soportada</p>
     }
 
-    function NextQuestion() {
+    async function NextQuestion() {
+        if(!surveyNode) { return; }
+        
+        const newNode = await GetNextNode(surveyId, surveyNode.ID, answerIndex);
+        setSurveyNode(newNode);
+
         setCurrQuestionIdx(currQuestionIdx + 1);
+        setAnswer("");
+        setAnswerIndex(0);
     }
 
     function SaveAndContinue(e: FormEvent) {
         e.preventDefault();
 
-        //TODO: Actually save the results somewhere
+        // TODO: Store the info or whatever
 
         NextQuestion();
     }
@@ -162,10 +197,8 @@ function AnswerSurvey() {
     }
 
     let surveyQuestion: SurveyQuestion | undefined = undefined;
-    if (questionOrder) {
-        const questionId = questionOrder[currQuestionIdx];
-
-        surveyQuestion = surveyQuestions?.find(x => x.ID === questionId);
+    if (surveyNode) {
+        surveyQuestion = surveyQuestions?.find(x => x.ID === surveyNode.QuestionId);
     }
 
     return <>
