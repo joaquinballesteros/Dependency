@@ -51,6 +51,11 @@ input[type="radio"], input[type="check"], input[type="text"], input[type="date"]
 }
 
 .yesno-btn {
-  width: 3em;
+  width: 100%;
   font-size: large;
+}
+
+.yesno-container {
+  margin-left: 0%;
+  max-width: 25em;
 }

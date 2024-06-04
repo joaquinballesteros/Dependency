@@ -4,7 +4,7 @@ import { Survey } from "../../../models/Survey";
 import { GetVariable, SetVariable, StorageVariable } from "../../../utils/localStorage";
 import LoadingScreen from "../../../components/loadingScreen";
 import SurveyTitle from "../../../components/surveyTitle";
-import { Button } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 
 function AskConsent() {
     const params = useParams();
@@ -42,12 +42,24 @@ function AskConsent() {
                     <main>
                         <h2>¿Permitir que se recopilen las respuestas?</h2>
                         <p>
-                            Usar estos datos ayudará a mejorar la precisión de los resultados de la
-                            encuesta en el futuro.
+                        Antes de comenzar la encuesta, nos gustaría pedir su consentimiento
+                        para recopilar y utilizar sus respuestas. Si acepta, le haremos algunas
+                        preguntas personales antes de comenzar y utilizaremos sus datos y
+                        respuestas para mejorar la calidad de la encuesta y la precisión de los resultados.
+                        La participación es voluntaria y sus respuestas serán tratadas con confidencialidad.
                         </p>
 
-                        <Button className="yesno-btn me-4" onClick={OnClickYes} variant="success">Sí</Button>
-                        <Button className="yesno-btn" onClick={OnClickNo} variant="danger">No</Button>
+                        <Container className="yesno-container">
+                            <Row>
+                                <Col>
+                                    <Button className="yesno-btn me-4" onClick={OnClickYes} variant="success">Sí</Button>
+                                </Col>
+
+                                <Col>
+                                    <Button className="yesno-btn" onClick={OnClickNo} variant="danger">No</Button>
+                                </Col>
+                            </Row>
+                        </Container>
                     </main>
                 </>
                 :
