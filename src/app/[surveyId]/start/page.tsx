@@ -17,7 +17,22 @@ function StartSurvey() {
         const fetchedSurvey = await GetSurvey(surveyId);
         if (fetchedSurvey) {
             SetVariable(StorageVariable.SURVEY_INFO, fetchedSurvey);
-            SetVariable(StorageVariable.QUESTION_ORDER, fetchedSurvey.QuestionOrder);
+
+            const surveyLoadOrder = fetchedSurvey.LoadOrder;
+    
+            if(surveyLoadOrder) {
+                const loadOrder: string[] = [...surveyLoadOrder];
+
+                fetchedSurvey.QuestionOrder.forEach(id => {
+                    if(!surveyLoadOrder.includes(id)) {
+                        loadOrder.push(id);
+                    }
+                });
+
+                SetVariable(StorageVariable.QUESTION_ORDER, loadOrder);
+            } else {
+                SetVariable(StorageVariable.QUESTION_ORDER, fetchedSurvey.QuestionOrder);
+            }
 
             setSurvey(fetchedSurvey);
         }

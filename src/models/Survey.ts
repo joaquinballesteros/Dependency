@@ -3,5 +3,6 @@ export interface Survey {
     Title : string,
     PrivateDescription : string,
     PublicDescription : string,
-    QuestionOrder: string[]
+    QuestionOrder: string[],
+    LoadOrder?: string[]
 }
