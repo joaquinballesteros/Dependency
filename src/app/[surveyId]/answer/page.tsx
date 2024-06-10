@@ -157,11 +157,11 @@ function AnswerSurvey() {
         } else if (type === QuestionType.RANGE) {
             return <Container className="m-0 p-0 numeric-range-container">
                 <Row className="m-0 p-0">
-                    <Col className="m-0 p-0 text-center">
+                    <Col className="m-0 p-0 text-center col-3">
                         {details.First}
                     </Col>
 
-                    <Col className="m-0 p-0 col-8">
+                    <Col className="m-0 p-0 col-6">
                         <Row className="m-0 p-0">
                             {
                                 details.Answers.map((_, i) =>
@@ -183,14 +183,14 @@ function AnswerSurvey() {
                         </Row>
                     </Col>
 
-                    <Col className="m-0 p-0 text-center">
+                    <Col className="m-0 p-0 text-center col-3">
                         {details.Last}
                     </Col>
                 </Row>
             </Container>
         }
 
-        return <p>Tipo de pregunta no soportada</p>
+        return <p>Tipo de pregunta no soportada {type}</p>
     }
 
     async function NextQuestion() {
