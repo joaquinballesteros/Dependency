@@ -59,3 +59,16 @@ input[type="radio"], input[type="check"], input[type="text"], input[type="date"]
   margin-left: 0%;
   max-width: 25em;
 }
+
+.survey-buttons {
+  max-width: 40em;
+}
+
+.finish-button-container {
+  text-align: center;
+}
+
+.finish-button {
+  font-size: x-large;
+  width: 75%;
+}

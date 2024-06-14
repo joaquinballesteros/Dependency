@@ -22,19 +22,24 @@ function AnswerSurvey() {
     const [surveyQuestions, setSurveyQuestions] = useState<SurveyQuestion[] | undefined>();
     const [currQuestionIdx, setCurrQuestionIdx] = useState(0);
     const [surveyNode, _setSurveyNode] = useState<SurveyNode | undefined>();
+    const [traversedSurveyNodes, setTraversedSurveyNodes] = useState<SurveyNode[]>([]);
     const [, setAnswer] = useState("");
     const [answerIndex, setAnswerIndex] = useState(0);
+
+    const FinishSurvey = useCallback(function() {
+        window.location.href = `/${surveyId}/finish`;
+    }, [surveyId]);
 
     const SetSurveyNode = useCallback(function(node: SurveyNode | undefined) {
         SetVariable(StorageVariable.CURRENT_NODE, node);
 
         if(!node?.QuestionId) {
-            window.location.href = `/${surveyId}/finish`
+            FinishSurvey();
             return;
         }
 
         _setSurveyNode(node);
-    }, [surveyId]);
+    }, [FinishSurvey]);
 
     const GetFirstSurveyNode = useCallback(async function() {
         const root = await GetRootNode(surveyId);
@@ -197,6 +202,8 @@ function AnswerSurvey() {
         if(!surveyNode) { return; }
         
         const newNode = await GetNextNode(surveyId, surveyNode.ID, answerIndex);
+
+        setTraversedSurveyNodes([...traversedSurveyNodes, surveyNode]);
         SetSurveyNode(newNode);
 
         setCurrQuestionIdx(currQuestionIdx + 1);
@@ -214,6 +221,19 @@ function AnswerSurvey() {
 
     function Skip() {
         NextQuestion();
+    }
+
+    function GoBack() {
+        const lastIndex = traversedSurveyNodes.length-1;
+        const newCurrentNode = traversedSurveyNodes[lastIndex];
+        const newTraversedNodes = traversedSurveyNodes.filter((_, i) => i < lastIndex);
+
+        setTraversedSurveyNodes(newTraversedNodes);
+        SetSurveyNode(newCurrentNode);
+
+        setCurrQuestionIdx(currQuestionIdx - 1);
+        setAnswer("");
+        setAnswerIndex(0);
     }
 
     let surveyQuestion: SurveyQuestion | undefined = undefined;
@@ -235,9 +255,16 @@ function AnswerSurvey() {
 
                                     {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
-                                    <div className="mt-5">
-                                        <Button className="mt-2" type="submit" variant="secondary">Continuar</Button>
-                                        <Button onClick={Skip} className="mt-2 skip-button" type="button" variant="secondary">Saltar</Button>
+                                    <div className="survey-buttons">
+                                        <div className="mt-5">
+                                            <Button className="me-2" type="submit" variant="secondary">Continuar</Button>
+                                            <Button onClick={GoBack} type="button" variant="secondary" disabled={traversedSurveyNodes.length === 0}>Volver</Button>
+                                            <Button onClick={Skip} className="skip-button" type="button" variant="secondary">Saltar</Button>
+                                        </div>
+
+                                        <div className="mt-5 finish-button-container">
+                                            <Button className="finish-button" type="button" variant="danger" onClick={FinishSurvey}>Terminar Encuesta</Button>
+                                        </div>
                                     </div>
                                 </Form>
                                 :
