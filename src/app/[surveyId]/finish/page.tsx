@@ -33,10 +33,17 @@ function FinishSurvey() {
                     <main>
                         {
                             surveyNode ?
-                                <>
+                                <div className="loading-div">
                                     <h2>Su resultado es:</h2>
-                                    <h2>{surveyNode.Result}</h2>
-                                </>
+                                    {
+                                        //We have to do toString and parseInt because json.parse doesn't correctly
+                                        //parse numbers from json.stringify
+                                        parseInt(surveyNode.Result.toString()) === 0?
+                                        <h2>No dependiente</h2>
+                                        :
+                                        <h2>Dependiente</h2>
+                                    }
+                                </div>
                                 :
                                 <LoadingScreen title="Cargando resultados..."></LoadingScreen>
                         }

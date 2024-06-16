@@ -96,10 +96,13 @@ function AnswerSurvey() {
         const existingSurvey = GetVariable<Survey>(StorageVariable.SURVEY_INFO);
         const existingQuestionOrder = GetVariable<string[]>(StorageVariable.QUESTION_ORDER);
         const selectedProfile = GetVariable<string>(StorageVariable.SELECTED_PROFILE);
+        const traversedNodes = GetVariable<SurveyNode[]>(StorageVariable.TRAVERSED_NODES);
 
         if (existingSurvey && existingSurvey.ID === surveyId && existingQuestionOrder && selectedProfile) {
             setSurvey(existingSurvey);
             setQuestionOrder(existingQuestionOrder);
+
+            setTraversedSurveyNodes(traversedNodes ?? []);
 
             LoadQuestions(selectedProfile, existingQuestionOrder);
 
@@ -202,8 +205,10 @@ function AnswerSurvey() {
         if(!surveyNode) { return; }
         
         const newNode = await GetNextNode(surveyId, surveyNode.ID, answerIndex);
+        const newTraversedNodes = [...traversedSurveyNodes, surveyNode];
 
-        setTraversedSurveyNodes([...traversedSurveyNodes, surveyNode]);
+        setTraversedSurveyNodes(newTraversedNodes);
+        SetVariable(StorageVariable.TRAVERSED_NODES, newTraversedNodes);
         SetSurveyNode(newNode);
 
         setCurrQuestionIdx(currQuestionIdx + 1);
@@ -229,6 +234,7 @@ function AnswerSurvey() {
         const newTraversedNodes = traversedSurveyNodes.filter((_, i) => i < lastIndex);
 
         setTraversedSurveyNodes(newTraversedNodes);
+        SetVariable(StorageVariable.TRAVERSED_NODES, newTraversedNodes);
         SetSurveyNode(newCurrentNode);
 
         setCurrQuestionIdx(currQuestionIdx - 1);
