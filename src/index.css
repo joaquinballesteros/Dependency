@@ -72,3 +72,7 @@ input[type="radio"], input[type="check"], input[type="text"], input[type="date"]
   font-size: x-large;
   width: 75%;
 }
+
+.help-button {
+  cursor: pointer;
+}

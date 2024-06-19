@@ -3,7 +3,7 @@ import { Survey } from "../../../models/Survey";
 import { useParams } from "react-router-dom";
 import { SurveyQuestion } from "../../../models/SurveyQuestion";
 import { GetVariable, SetVariable, StorageVariable } from "../../../utils/localStorage";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { QuestionType } from "../../../models/Question";
 import { QuestionDetails } from "../../../models/QuestionDetails";
 import SurveyTitle from "../../../components/surveyTitle";
@@ -12,6 +12,7 @@ import { GetAllVersions } from "../../../repositories/versionRepo";
 import LoadingScreen from "../../../components/loadingScreen";
 import { SurveyNode } from "../../../models/SurveyNode";
 import { GetNextNode, GetRootNode } from "../../../repositories/surveyNodeRepo";
+import { QuestionCircle } from "react-bootstrap-icons";
 
 function AnswerSurvey() {
     const params = useParams();
@@ -25,6 +26,11 @@ function AnswerSurvey() {
     const [traversedSurveyNodes, setTraversedSurveyNodes] = useState<SurveyNode[]>([]);
     const [, setAnswer] = useState("");
     const [answerIndex, setAnswerIndex] = useState(0);
+
+    const [helpModalShow, setHelpModalShow] = useState(false);
+
+    const handleHelpModalClose = () => setHelpModalShow(false);
+    const handleHelpModalShow = () => setHelpModalShow(true);
 
     const FinishSurvey = useCallback(function() {
         window.location.href = `/${surveyId}/finish`;
@@ -84,7 +90,8 @@ function AnswerSurvey() {
                 loadedQuestions.push({
                     ID: question.ID!,
                     QuestionType: question.QuestionType,
-                    Details: questionDetails!
+                    Details: questionDetails!,
+                    Help: question.Help
                 });
 
                 setSurveyQuestions([...loadedQuestions]);
@@ -219,7 +226,7 @@ function AnswerSurvey() {
     function SaveAndContinue(e: FormEvent) {
         e.preventDefault();
 
-        // TODO: Store the info or whatever
+        // TODO: Store the answers somewhere
 
         NextQuestion();
     }
@@ -257,7 +264,15 @@ function AnswerSurvey() {
                         {
                             surveyQuestion ?
                                 <Form onSubmit={SaveAndContinue}>
-                                    <Form.Label className="question-title mb-3">{surveyQuestion.Details.Title}</Form.Label>
+                                    <Form.Label className="question-title mb-3">
+                                        {surveyQuestion.Details.Title}
+                                        {
+                                            surveyQuestion.Help.length > 0?
+                                            <QuestionCircle onClick={handleHelpModalShow} className="help-button ms-2"></QuestionCircle>
+                                            :
+                                            <></>
+                                        }
+                                    </Form.Label>
 
                                     {GetQuestionBody(surveyQuestion.QuestionType, surveyQuestion.Details)}
 
@@ -272,6 +287,15 @@ function AnswerSurvey() {
                                             <Button className="finish-button" type="button" variant="danger" onClick={FinishSurvey}>Terminar Encuesta</Button>
                                         </div>
                                     </div>
+
+                                    <Modal size="lg" show={helpModalShow} onHide={handleHelpModalClose}>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Ayuda Adicional</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        {surveyQuestion.Help}
+                                    </Modal.Body>
+                                </Modal>
                                 </Form>
                                 :
                                 <main>

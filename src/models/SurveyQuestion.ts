@@ -4,5 +4,6 @@ import { QuestionDetails } from "./QuestionDetails";
 export interface SurveyQuestion {
     ID: string,
     QuestionType: QuestionType,
-    Details: QuestionDetails
+    Details: QuestionDetails,
+    Help: string
 }
