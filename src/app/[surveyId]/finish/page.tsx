@@ -33,10 +33,10 @@ function FinishSurvey() {
                     <main>
                         {
                             surveyNode ?
-                                <div className="loading-div">
+                                <div className="finish-div">
                                     <h1 className="mb-3">Ha terminado la encuesta</h1>
 
-                                    <h3>Su resultado es:</h3>
+                                    <h2 className="mb-0">Su resultado es:</h2>
                                     {
                                         //We have to do toString and parseInt because json.parse doesn't correctly
                                         //parse numbers from json.stringify

@@ -50,6 +50,11 @@ input[type="radio"], input[type="check"], input[type="text"], input[type="date"]
   padding: 2em;
 }
 
+.finish-div{
+  text-align: center;
+  padding: 0.5em
+}
+
 .yesno-btn {
   width: 100%;
   font-size: large;

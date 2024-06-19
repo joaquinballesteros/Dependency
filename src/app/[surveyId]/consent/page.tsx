@@ -29,6 +29,7 @@ function AskConsent() {
     function OnClickNo() {
         SetVariable(StorageVariable.SELECTED_PROFILE, "NoProfile");
         SetVariable(StorageVariable.CURRENT_NODE, null);
+        SetVariable(StorageVariable.TRAVERSED_NODES, null);
 
         window.location.href = `/${surveyId}/answer`;
     }
