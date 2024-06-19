@@ -34,7 +34,7 @@ function FinishSurvey() {
                         {
                             surveyNode ?
                                 <div className="loading-div">
-                                    <h1 className="mb-3">Encuesta terminada</h1>
+                                    <h1 className="mb-3">Ha terminado la encuesta</h1>
 
                                     <h3>Su resultado es:</h3>
                                     {
