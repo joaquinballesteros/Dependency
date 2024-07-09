@@ -25,6 +25,19 @@ function FinishSurvey() {
         }
     }, [surveyId]);
 
+    //We have to do toString and parseInt because json.parse doesn't correctly
+    //parse numbers from json.stringify
+    let result = surveyNode? parseInt(surveyNode.Result.toString()) : 0;
+    let message = "No dependiente";
+
+    if(result === 1) {
+        message = "Dependiente grado 1";
+    } else if (result === 2) {
+        message = "Dependiente grado 2";
+    } else if (result === 3) {
+        message = "Dependiente grado 3";
+    }
+
     return <>
         {
             survey ?
@@ -37,14 +50,7 @@ function FinishSurvey() {
                                     <h1 className="mb-3">Ha terminado la encuesta</h1>
 
                                     <h2 className="mb-0">Su resultado es:</h2>
-                                    {
-                                        //We have to do toString and parseInt because json.parse doesn't correctly
-                                        //parse numbers from json.stringify
-                                        parseInt(surveyNode.Result.toString()) === 0?
-                                        <h2>No dependiente</h2>
-                                        :
-                                        <h2>Dependiente</h2>
-                                    }
+                                    <h2>{message}</h2>
                                 </div>
                                 :
                                 <LoadingScreen title="Cargando resultados..."></LoadingScreen>
