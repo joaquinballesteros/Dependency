@@ -20,6 +20,8 @@ function StartSurvey() {
 
             const surveyLoadOrder = fetchedSurvey.LoadOrder;
     
+            console.log(surveyLoadOrder)
+
             if(surveyLoadOrder) {
                 const loadOrder: string[] = [...surveyLoadOrder];
 
@@ -39,13 +41,7 @@ function StartSurvey() {
     }, [surveyId])
 
     useEffect(() => {
-        const existingSurvey = GetVariable<Survey>(StorageVariable.SURVEY_INFO);
-
-        if (existingSurvey && existingSurvey.ID === surveyId) {
-            setSurvey(existingSurvey);
-        } else {
-            FetchSurveyData();
-        }
+        FetchSurveyData();
     }, [surveyId, FetchSurveyData]);
 
     function OnContinueButtonClick() {
