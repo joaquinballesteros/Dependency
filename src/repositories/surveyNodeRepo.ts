@@ -5,6 +5,6 @@ export async function GetRootNode(surveyId: string): Promise<SurveyNode | undefi
     return await Get(`survey/${surveyId}/decisionTree/start`);
 }
 
-export async function GetNextNode(surveyId: string, nodeId: string, answer: number): Promise<SurveyNode | undefined> {
+export async function GetNextNode(surveyId: string, nodeId: string, answer: string): Promise<SurveyNode | undefined> {
     return await Get(`survey/${surveyId}/decisionTree/${nodeId}/next?answer=${answer}`);
 }

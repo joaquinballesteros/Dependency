@@ -208,10 +208,14 @@ function AnswerSurvey() {
         return <p>Tipo de pregunta no soportada {type}</p>
     }
 
-    async function NextQuestion() {
+    async function NextQuestion(hasSkipped = false) {
         if(!surveyNode) { return; }
         
-        const newNode = await GetNextNode(surveyId, surveyNode.ID, answerIndex);
+        let answer = answerIndex.toString();
+        if(hasSkipped) {
+            answer = "skip";
+        }
+        const newNode = await GetNextNode(surveyId, surveyNode.ID, answer);
         const newTraversedNodes = [...traversedSurveyNodes, surveyNode];
 
         setTraversedSurveyNodes(newTraversedNodes);
@@ -232,7 +236,7 @@ function AnswerSurvey() {
     }
 
     function Skip() {
-        NextQuestion();
+        NextQuestion(true);
     }
 
     function GoBack() {
