@@ -1,15 +1,19 @@
-# Rellenador de encuestas
+# Survey Filler
 
-Esta aplicación permite rellenar encuestas que se adaptan al perfil del usuario que la esta rellenando. Al finalizar, se muestra una prediccion del grado de dependencia en base a las respuestas.
+This application allows users to fill out surveys that adapt to their profile. At the end, a prediction of the dependency level is shown based on the responses.
 
-## Guia de Instalacion
+## Installation Guide
 
-1. Instalar Node.js y npm.
-2. Descargar el código del proyecto.
-3. Ejecutar el comando `npm i` para instalar todas las dependencias.
-4. Crear un archivo .env para las variables de entorno.
-5. Ejecutar el comando `npm run start` para ejecutar la aplicación en el entorno de desarrollo. Por defecto se ejecutará en el puerto 3000.
+1. Install Node.js and npm.
+2. Download the project code.
+3. Run the command `npm i` to install all dependencies.
+4. Create a .env file for environment variables.
+5. Run the command `npm run start` to run the application in the development environment. By default, it will run on port 3000.
 
-## Variables de Entorno
+## Environment Variables
 
-- **REACT_APP_BACKEND_URL:** Contiene la url a la api. Debe ser de la forma `https://[ruta]/api/`.
+- **REACT_APP_BACKEND_URL:** Contains the URL to the API. It should be in the form `https://[path]/api/`.
+
+## Create the links in the DataBase
+Use the script **uploadModel.py** and update to your database direction.
+
